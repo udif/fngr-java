@@ -17,10 +17,12 @@
 //
 package com.udifink.fngr;
 
+import java.io.File;
+
 //
 // Thin abstract class from which concrete classes for each VCS are derived
 //
-public class VCS {
+public abstract class VCS {
     private String filename;
     private String revision;
     private boolean modified;
@@ -29,7 +31,7 @@ public class VCS {
     // return true if the given filename is really part of this VCS type
     // (to be implemented by specific derived classes for each VCS type)
     // Also, if true, set the private fields above
-    public abstract boolean isItMe(String filename);
+    public abstract boolean isItMe(File f);
 
     public boolean getModified() {
         return modified;

@@ -22,13 +22,15 @@ class Fngr {
 
     public String getFingerPrint(String filename) {
         File f = new File(filename);
-        if (f.canRead()) {
+        if (f.canRead() && f.isFile()) { // TODO maybe support directory revisions in the future, if this has any meaning
             for (VCSTypes v : VCSTypes.values()) {
-                vcs = getVcs(v);
+                vcs = VCSTypes.getVcs(v);
                 if (vcs.isItMe(f)) {
-                    return vcs.getFingerPrint(filename);
+                    return vcs.getFingerPrint();
                 }
             }
         }
+        assert false : "Should never happen";
+        return "";
     }
 }

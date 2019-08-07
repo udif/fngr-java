@@ -29,13 +29,15 @@ public enum VCSTypes {
     public static VCS getVcs(VCSTypes vcstype) {
         switch (vcstype) {
             case GIT:
-                return new Git();
+                return new GitVCS();
         
             case SVN:
-                return new SVN();
+                return new SVNVCS();
 
             case NONE:
                 return new NoVCS();
         }
+        assert false : "Should never happen!";
+        return null; // Should never happen
     }
 }

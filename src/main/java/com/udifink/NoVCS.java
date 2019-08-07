@@ -17,8 +17,10 @@
 //
 package com.udifink.fngr;
 
+import java.io.File;
+
 public class NoVCS extends VCS {
-    public boolean isItMe(String filename) {
+    public boolean isItMe(File f) {
         return true;
     }
 

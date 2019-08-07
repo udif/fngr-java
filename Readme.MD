@@ -16,5 +16,5 @@ Goals (not all are implemented):
 * report back the exact revision of the file
 * can detect if the file was modified. On SVN can report from what revision it originated, even if it was modified.
 * report file fingerprint (md5su, sha1, etc.)
-* Java, C++, Python versions
+* Java, C++, Python versions (and will appear on separate repositories)
 

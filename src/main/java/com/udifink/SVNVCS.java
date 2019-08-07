@@ -17,5 +17,10 @@
 //
 package com.udifink.fngr;
 
-public class SVN extends VCS {
+import java.io.File;
+
+public class SVNVCS extends VCS {
+    public boolean isItMe(File f) {
+        return false; // TODO fix this when we actually implement SVN
+    }
 }
