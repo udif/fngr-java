@@ -72,6 +72,13 @@ public class SVNVCSTest {
     }
 
     @Test
+    public void testisItMeSVNNonExistentFileOrDir() {
+        SVNVCS vcs = new SVNVCS();
+        assertTrue("Failed to recognize a non existing file/directoryin SVN workdir as inside SVN repository",
+            vcs.isItMe(new File("../fngr-testdir/test-svn-workdir/nonexistent")));
+    }
+
+    @Test
     public void testisItMeSVNUnversionedFileInsideUnversionedDir() {
         SVNVCS vcs = new SVNVCS();
         assertTrue("Failed to recognize an unversioned file inside an unversioned directory in SVN workdir as inside SVN repository",
