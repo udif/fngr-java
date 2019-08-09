@@ -18,10 +18,10 @@
 package com.udifink.fngr;
 
 import java.io.File;
-import org.tmatesoft.svn.core.wc.SVNClientManager;
-import org.tmatesoft.svn.core.wc.SVNStatus;
+//import org.tmatesoft.svn.core.wc.SVNClientManager;
+//import org.tmatesoft.svn.core.wc.SVNStatus;
 import org.tmatesoft.svn.core.wc2.SvnOperationFactory;
-import org.tmatesoft.svn.core.SVNException;
+//import org.tmatesoft.svn.core.SVNException;
 
 public class SVNVCS extends VCS {
 
@@ -31,8 +31,14 @@ public class SVNVCS extends VCS {
 
     public boolean isItMe(File f) {
         File dir = f.isDirectory() ? f : f.getParentFile();
-        boolean isVersionedDirectory = SvnOperationFactory.isVersionedDirectory(dir);
-        return isVersionedDirectory;
+        while (true) {
+            boolean isVersionedDirectory = SvnOperationFactory.isVersionedDirectory(dir);
+            if (isVersionedDirectory)
+                return true;
+            dir = dir.getParentFile();
+            if (dir == null)
+                return false;
+        }
         //try {
         //    SVNStatus s = SVNClientManager
         //        .newInstance()
