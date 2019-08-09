@@ -23,19 +23,24 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GitVCS extends VCS {
-    public boolean isItMe(File f) {
-        try {
-            FileRepositoryBuilder builder = new FileRepositoryBuilder();
-            Repository repository = builder.setGitDir(f.getParentFile())
-                .readEnvironment() // scan environment GIT_* variables
-                .findGitDir() // scan up the file system tree
-                .build();
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
 
+    public VCSTypes getVCSType() {
+        return VCSTypes.GIT;
+    }
+
+    public boolean isItMe(File f) {
+        FileRepositoryBuilder builder = new FileRepositoryBuilder().findGitDir(f.getAbsoluteFile().getParentFile());
+        if (builder.getGitDir() == null)
+            return false;
+        try {
+            Repository repository = builder.setMustExist(true).build();
+        } catch (IOException e) {
+
+        }
+        return true;
     }
 }

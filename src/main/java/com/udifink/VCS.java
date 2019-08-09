@@ -18,6 +18,8 @@
 package com.udifink.fngr;
 
 import java.io.File;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //
 // Thin abstract class from which concrete classes for each VCS are derived
@@ -25,8 +27,11 @@ import java.io.File;
 public abstract class VCS {
     private String filename;
     private String revision;
-    private boolean modified;
-    private VCSTypes vcs;
+    private boolean in_local_vcs_dir; // true if file location is within a local repository
+    private boolean versioned; // true if file is tracked by VCS (in_local_vcs_dir must be true)
+    private boolean modified; // true if local file was modified compared to VCS copy (versioned must be true)
+
+    private Logger logger = LoggerFactory.getLogger(VCS.class);
 
     // return true if the given filename is really part of this VCS type
     // (to be implemented by specific derived classes for each VCS type)
@@ -45,9 +50,7 @@ public abstract class VCS {
         return filename;
     }
 
-    public VCSTypes getVCSType() {
-        return vcs;
-    }
+    public abstract VCSTypes getVCSType();
 
     public String getFingerPrint() {
         return getVCSType() + ": " + getFilename() + "@" + getRevision() + (getModified() ? " (modified)" : "");

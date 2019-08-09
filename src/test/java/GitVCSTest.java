@@ -14,14 +14,23 @@
 
 package com.udifink.fngr;
 
+import java.io.File;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class FngrTest {
+public class GitVCSTest {
     @Test
-    public void testGetFingerPrintUntrackedFile() {
-        Fngr fngr = new Fngr();
-        assertTrue("Failed!", true);
+    public void testisItMeGitFile() {
+        GitVCS vcs = new GitVCS();
+        assertTrue("Failed!", vcs.isItMe(new File("build.gradle")));
+    }
+
+    @Test
+    public void testisItMeNoGitFile() {
+        GitVCS vcs = new GitVCS();
+        assertFalse("Failed!", vcs.isItMe(new File("/etc/fstab")));
     }
 }
