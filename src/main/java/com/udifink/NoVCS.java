@@ -20,6 +20,10 @@ package com.udifink.fngr;
 import java.io.File;
 
 public class NoVCS extends VCS {
+    public VCSTypes getVCSType() {
+        return VCSTypes.NONE;
+    }
+
     public boolean isItMe(File f) {
         return true;
     }
