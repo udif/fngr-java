@@ -17,7 +17,7 @@ package com.udifink.fngr;
 import java.io.File;
 
 class Fngr {
-    private VCSTypes vcstype;
+    //private VCSTypes vcstype;
     private VCS vcs;
 
     public String getFingerPrint(String filename) {

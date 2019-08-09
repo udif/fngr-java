@@ -19,8 +19,8 @@ package com.udifink.fngr;
 
 import java.io.File;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
-import org.tmatesoft.svn.core.wc.SVNStatusClient;
 import org.tmatesoft.svn.core.wc.SVNStatus;
+import org.tmatesoft.svn.core.wc2.SvnOperationFactory;
 import org.tmatesoft.svn.core.SVNException;
 
 public class SVNVCS extends VCS {
@@ -30,11 +30,18 @@ public class SVNVCS extends VCS {
     }
 
     public boolean isItMe(File f) {
-        try {
-            return SVNClientManager.newInstance().getStatusClient().doStatus(f, false).isVersioned();
-        } catch (SVNException e) {
-            return false;
-        }
+        File dir = f.isDirectory() ? f : f.getParentFile();
+        boolean isVersionedDirectory = SvnOperationFactory.isVersionedDirectory(dir);
+        return isVersionedDirectory;
+        //try {
+        //    SVNStatus s = SVNClientManager
+        //        .newInstance()
+        //        .getStatusClient()
+        //        .doStatus(f, false);
+        //    return s.isVersioned();
+        //} catch (SVNException e) {
+        //    return false;
+        //}
         //public static long getRevisionNumber(String localPath) throws SVNException {
         //    final SVNStatus status = SVNClientManager.newInstance().getStatusClient().doStatus(new File(localPath), false);
         //    return status != null ? status.getRevision().getNumber() : -1;
