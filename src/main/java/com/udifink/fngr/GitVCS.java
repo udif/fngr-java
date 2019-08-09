@@ -43,4 +43,9 @@ public class GitVCS extends VCS {
         }
         return true;
     }
+
+    final protected void calcVcsFingerPrint() {
+
+    }
+
 }

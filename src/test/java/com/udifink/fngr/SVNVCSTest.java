@@ -16,7 +16,6 @@ package com.udifink.fngr;
 
 import java.io.File;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -26,7 +26,7 @@ public enum VCSTypes {
         throw new IllegalArgumentException("Illegal VCS name");
     }
 
-    public static VCS getVcs(VCSTypes vcstype) {
+    public static VCS newVcs(VCSTypes vcstype) {
         switch (vcstype) {
             case GIT:
                 return new GitVCS();

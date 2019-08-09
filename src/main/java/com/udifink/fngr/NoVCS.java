@@ -28,6 +28,10 @@ public class NoVCS extends VCS {
         return true;
     }
 
+    final protected void calcVcsFingerPrint() {
+
+    }
+
     public String getFingerPrint() {
         return getFilename() + " (no version control)";
     }

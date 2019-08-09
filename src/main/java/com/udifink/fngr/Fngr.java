@@ -15,22 +15,26 @@
 package com.udifink.fngr;
 
 import java.io.File;
+import java.io.IOException;
 
 class Fngr {
     //private VCSTypes vcstype;
     private VCS vcs;
 
-    public String getFingerPrint(String filename) {
+    public VCS calcFingerPrint(String filename) throws IOException {
         File f = new File(filename);
-        if (f.canRead() && f.isFile()) { // TODO maybe support directory revisions in the future, if this has any meaning
+        if (f.canRead()) {
             for (VCSTypes v : VCSTypes.values()) {
-                vcs = VCSTypes.getVcs(v);
-                if (vcs.isItMe(f)) {
-                    return vcs.getFingerPrint();
+                vcs = VCSTypes.newVcs(v);
+                vcs.filename = filename;
+                vcs.in_local_vcs_dir = vcs.isItMe(f);
+                if (vcs.in_local_vcs_dir) {
+                    vcs.calcVcsFingerPrint();
+                    return vcs;
                 }
             }
         }
         assert false : "Should never happen";
-        return "";
+        throw new IOException();
     }
 }

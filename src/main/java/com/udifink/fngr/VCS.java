@@ -25,21 +25,25 @@ import org.slf4j.LoggerFactory;
 // Thin abstract class from which concrete classes for each VCS are derived
 //
 public abstract class VCS {
-    private String filename;
-    private String revision;
-    private boolean in_local_vcs_dir; // true if file location is within a local repository
-    private boolean versioned; // true if file is tracked by VCS (in_local_vcs_dir must be true)
-    private boolean modified; // true if local file was modified compared to VCS copy (versioned must be true)
+    // These are protected fields because we do all the work in the derived classes
+    protected String filename;
+    protected String revision;
+    protected boolean in_local_vcs_dir; // true if file location is within a local repository
+    protected boolean is_versioned; // true if file is tracked by VCS (in_local_vcs_dir must be true)
+    protected boolean is_modified; // true if local file was modified compared to VCS copy (versioned must be true)
+    protected boolean is_file; // true if file, false if dir
 
-    private Logger logger = LoggerFactory.getLogger(VCS.class);
+    protected Logger logger = LoggerFactory.getLogger(VCS.class);
 
     // return true if the given filename is really part of this VCS type
     // (to be implemented by specific derived classes for each VCS type)
-    // Also, if true, set the private fields above
-    public abstract boolean isItMe(File f);
+    // Also, if true, set the protected fields above
+    protected abstract boolean isItMe(File f);
+
+    protected abstract void calcVcsFingerPrint();
 
     public boolean getModified() {
-        return modified;
+        return is_modified;
     }
 
     public String getRevision() {
