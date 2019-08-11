@@ -13,10 +13,16 @@ Goals (not all are implemented):
 -----------------------------------
 * Supports Git, SVN but also detects plain files (pull requests for other VCS are welcomed)
 * Automatically detect what version control a file is under.
-* report back the exact revision of the file
-* can detect if the file was modified. On SVN can report from what revision it originated, even if it was modified.
+* Report back the exact revision of the file
+* Detect if the file was modified. If on SVNm also report from what revision it originated, even if it was modified.
 * report file fingerprint (md5su, sha1, etc.)
-* Java, C++, Python versions (and will appear on separate repositories)
+
+TODO
+----
+* Complete Git support
+* Java, C++, Python versions (should will appear on separate repositories?)
+* JavaDoc
+* CI
 
 Setup
 -----
