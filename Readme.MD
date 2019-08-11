@@ -15,7 +15,6 @@ Goals (not all are implemented):
 * Automatically detect what version control a file is under.
 * Report back the exact revision of the file
 * Detect if the file was modified. If on SVNm also report from what revision it originated, even if it was modified.
-* report file fingerprint (md5su, sha1, etc.)
 
 TODO
 ----
@@ -23,6 +22,7 @@ TODO
 * Java, C++, Python versions (should will appear on separate repositories?)
 * JavaDoc
 * CI
+* Report file fingerprint (md5sum, sha1, etc.)
 
 Setup
 -----
