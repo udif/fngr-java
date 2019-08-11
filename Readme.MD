@@ -18,3 +18,6 @@ Goals (not all are implemented):
 * report file fingerprint (md5su, sha1, etc.)
 * Java, C++, Python versions (and will appear on separate repositories)
 
+Setup
+-----
+Before running the test, please run `./build_test_dir.sh` , which will create a local SVN repository and a working copy, complete with various combination of local and versioned files and directories, which are used by the tests.
