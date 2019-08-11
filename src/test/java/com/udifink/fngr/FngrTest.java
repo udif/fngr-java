@@ -47,6 +47,9 @@ public class FngrTest {
             VCS vcs = fngr.calcFingerPrint(path);
             assertTrue(path + ": VCS object type failure", vcs instanceof SVNVCS);
             assertTrue(path + ": 'exists' flag", exists == vcs.exists);
+            if (!exists)
+                return;
+            assertTrue(path + ": 'is_versioned' flag", is_versioned == vcs.is_versioned);
         } catch (IOException e) {
             assertTrue("Caught IOException!", false);
         }
@@ -57,7 +60,7 @@ public class FngrTest {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir",
             true /* exists */,
-            false /* is_versioned */);
+            true /* is_versioned */);
     }
 
     @Test

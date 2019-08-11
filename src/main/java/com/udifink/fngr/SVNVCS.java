@@ -23,6 +23,7 @@ import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNStatus;
+import org.tmatesoft.svn.core.wc.SVNStatusType;
 import org.tmatesoft.svn.core.wc2.SvnOperationFactory;
 //import org.tmatesoft.svn.core.SVNException;
 
@@ -53,10 +54,11 @@ public class SVNVCS extends VCS {
             SVNStatus s = SVNClientManager
                 .newInstance()
                 .getStatusClient()
-                .doStatus(new File(filename), false);
+                .doStatus(new File(filename), true);
             if (s != null) {
                 SVNRevision rev = s.getRevision();
-                is_versioned = s.isVersioned();
+                SVNStatusType st = s.getContentsStatus();
+                is_versioned = (st != SVNStatusType.STATUS_UNVERSIONED);
                 is_modified = rev.isLocal();
                 date = rev.getDate();
                 revision = rev.toString();

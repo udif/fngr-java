@@ -22,10 +22,11 @@ class Fngr {
     private VCS vcs;
 
     public VCS calcFingerPrint(String filename) throws IOException {
-        File f = new File(filename);
+        File f = new File(filename).getCanonicalFile();
+        String canonical_filename = f.getAbsolutePath();
         for (VCSTypes v : VCSTypes.values()) {
             vcs = VCSTypes.newVcs(v);
-            vcs.filename = filename;
+            vcs.filename = canonical_filename;
             vcs.in_local_vcs_dir = vcs.isItMe(f);           
             if (vcs.in_local_vcs_dir) {
                 vcs.exists = f.isDirectory() || f.isFile();
