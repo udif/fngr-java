@@ -30,7 +30,7 @@ import org.tmatesoft.svn.core.wc2.SvnOperationFactory;
 public class SVNVCS extends VCS {
 
     public VCSTypes getVCSType() {
-        return VCSTypes.GIT;
+        return VCSTypes.SVN;
     }
 
     public boolean isItMe(File f) {
@@ -67,11 +67,6 @@ public class SVNVCS extends VCS {
         } catch (SVNException e) {
             logger.error("SVNException");
         }
-        //public static long getRevisionNumber(String localPath) throws SVNException {
-        //    final SVNStatus status = SVNClientManager.newInstance().getStatusClient().doStatus(new File(localPath), false);
-        //    return status != null ? status.getRevision().getNumber() : -1;
-        //}
-        //return false; // TODO fix this when we actually implement SVN
     }
 
     public String getFingerPrint() {

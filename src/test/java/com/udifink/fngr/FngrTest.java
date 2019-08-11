@@ -41,18 +41,22 @@ public class FngrTest {
         }
     }
 
-    private void testCalcFingerSVN(String path, boolean exists, boolean is_versioned, boolean is_modified) {
+    private void testCalcFingerSVN(
+            String path, boolean exists, boolean is_versioned, boolean is_modified,
+            boolean is_file, String revision) {
         try {
             Fngr fngr = new Fngr();
             VCS vcs = fngr.calcFingerPrint(path);
             assertTrue(path + ": VCS object type failure", vcs instanceof SVNVCS);
             assertTrue(path + ": 'exists' flag", exists == vcs.exists);
+            assertTrue(path + ": 'is_file' flag", is_file == vcs.is_file);
             if (!exists)
                 return;
             assertTrue(path + ": 'is_versioned' flag", is_versioned == vcs.is_versioned);
             if (!is_versioned)
                 return;
-            assertTrue(path + ": 'is_modified' flag", is_modified == vcs.is_modified);
+                    assertTrue(path + ": 'Revision'", revision.equals(vcs.revision));
+                    assertTrue(path + ": 'is_modified' flag", is_modified == vcs.is_modified);
         } catch (IOException e) {
             assertTrue("Caught IOException!", false);
         }
@@ -64,7 +68,9 @@ public class FngrTest {
             "../fngr-testdir/test-svn-workdir",
             true /* exists */,
             true /* is_versioned */,
-            false /* is modified */);
+            false /* is modified */,
+            false /* is file */,
+            "0" /* revision */);
     }
 
     @Test
@@ -73,7 +79,9 @@ public class FngrTest {
             "../fngr-testdir/test-svn-workdir/non-head-versioned-file",
             true /* exists */,
             true /* is_versioned */,
-            false /* is modified */);
+            false /* is modified */,
+            true /* is file */,
+            "1" /* revision */);
     }
 
     @Test
@@ -82,7 +90,9 @@ public class FngrTest {
             "../fngr-testdir/test-svn-workdir/unversioned-file",
             true /* exists */,
             false /* is_versioned */,
-            false /* is modified */);
+            false /* is modified */,
+            true /* is file */,
+            "" /* revision */);
     }
 
     @Test
@@ -91,7 +101,9 @@ public class FngrTest {
             "../fngr-testdir/test-svn-workdir/versioned-dir",
             true /* exists */,
             true /* is_versioned */,
-            false /* is modified */);
+            false /* is modified */,
+            false /* is file */,
+            "7" /* revision */);
     }
 
     @Test
@@ -100,7 +112,9 @@ public class FngrTest {
             "../fngr-testdir/test-svn-workdir/versioned-dir/versioned-file-in-a-versioned-dir",
             true /* exists */,
             true /* is_versioned */,
-            false /* is modified */);
+            false /* is modified */,
+            true /* is file */,
+            "8" /* revision */);
     }
 
     @Test
@@ -109,7 +123,9 @@ public class FngrTest {
             "../fngr-testdir/test-svn-workdir/versioned-dir/unversioned-file-in-a-versioned-dir",
             true /* exists */,
             false /* is_versioned */,
-            false /* is modified */);
+            false /* is modified */,
+            true /* is file */,
+            "" /* revision */);
     }
 
     @Test
@@ -118,7 +134,9 @@ public class FngrTest {
             "../fngr-testdir/test-svn-workdir/unversioned-dir",
             true /* exists */,
             false /* is_versioned */,
-            false /* is modified */);
+            false /* is modified */,
+            false /* is file */,
+            "" /* revision */);
     }
 
     @Test
@@ -127,7 +145,9 @@ public class FngrTest {
             "../fngr-testdir/test-svn-workdir/nonexistent",
             false /* exists */,
             false /* is_versioned */,
-            false /* is modified */);
+            false /* is modified */,
+            false /* is file */,
+            "" /* revision */);
     }
 
     @Test
@@ -136,7 +156,9 @@ public class FngrTest {
             "../fngr-testdir/test-svn-workdir/unversioned-dir/unversioned-file-in-an-unversioned-dir",
             true /* exists */,
             false /* is_versioned */,
-            false /* is modified */);
+            false /* is modified */,
+            true /* is file */,
+            "" /* revision */);
     }
 
     @Test
@@ -145,7 +167,9 @@ public class FngrTest {
             "../fngr-testdir/test-svn-workdir/modified-non-head-versioned-file",
             true /* exists */,
             true /* is_versioned */,
-            true /* is modified */);
+            true /* is modified */,
+            true /* is file */,
+            "3" /* revision */);
     }
 
 }
