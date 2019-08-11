@@ -59,7 +59,7 @@ public class SVNVCS extends VCS {
                 SVNRevision rev = s.getRevision();
                 SVNStatusType st = s.getContentsStatus();
                 is_versioned = (st != SVNStatusType.STATUS_UNVERSIONED);
-                is_modified = rev.isLocal();
+                is_modified = (st == SVNStatusType.STATUS_MODIFIED);
                 date = rev.getDate();
                 revision = rev.toString();
             }

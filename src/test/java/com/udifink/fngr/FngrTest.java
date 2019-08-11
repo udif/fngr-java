@@ -41,7 +41,7 @@ public class FngrTest {
         }
     }
 
-    private void testCalcFingerSVN(String path, boolean exists, boolean is_versioned) {
+    private void testCalcFingerSVN(String path, boolean exists, boolean is_versioned, boolean is_modified) {
         try {
             Fngr fngr = new Fngr();
             VCS vcs = fngr.calcFingerPrint(path);
@@ -50,6 +50,9 @@ public class FngrTest {
             if (!exists)
                 return;
             assertTrue(path + ": 'is_versioned' flag", is_versioned == vcs.is_versioned);
+            if (!is_versioned)
+                return;
+            assertTrue(path + ": 'is_modified' flag", is_modified == vcs.is_modified);
         } catch (IOException e) {
             assertTrue("Caught IOException!", false);
         }
@@ -60,15 +63,17 @@ public class FngrTest {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir",
             true /* exists */,
-            true /* is_versioned */);
+            true /* is_versioned */,
+            false /* is modified */);
     }
 
     @Test
     public void testCalcFingerSVN2() {
         testCalcFingerSVN(
-            "../fngr-testdir/test-svn-workdir/versioned-file",
+            "../fngr-testdir/test-svn-workdir/non-head-versioned-file",
             true /* exists */,
-            true /* is_versioned */);
+            true /* is_versioned */,
+            false /* is modified */);
     }
 
     @Test
@@ -76,7 +81,8 @@ public class FngrTest {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/unversioned-file",
             true /* exists */,
-            false /* is_versioned */);
+            false /* is_versioned */,
+            false /* is modified */);
     }
 
     @Test
@@ -84,7 +90,8 @@ public class FngrTest {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/versioned-dir",
             true /* exists */,
-            true /* is_versioned */);
+            true /* is_versioned */,
+            false /* is modified */);
     }
 
     @Test
@@ -92,7 +99,8 @@ public class FngrTest {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/versioned-dir/versioned-file-in-a-versioned-dir",
             true /* exists */,
-            true /* is_versioned */);
+            true /* is_versioned */,
+            false /* is modified */);
     }
 
     @Test
@@ -100,7 +108,8 @@ public class FngrTest {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/versioned-dir/unversioned-file-in-a-versioned-dir",
             true /* exists */,
-            false /* is_versioned */);
+            false /* is_versioned */,
+            false /* is modified */);
     }
 
     @Test
@@ -108,7 +117,8 @@ public class FngrTest {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/unversioned-dir",
             true /* exists */,
-            false /* is_versioned */);
+            false /* is_versioned */,
+            false /* is modified */);
     }
 
     @Test
@@ -116,7 +126,8 @@ public class FngrTest {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/nonexistent",
             false /* exists */,
-            false /* is_versioned */);
+            false /* is_versioned */,
+            false /* is modified */);
     }
 
     @Test
@@ -124,6 +135,17 @@ public class FngrTest {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/unversioned-dir/unversioned-file-in-an-unversioned-dir",
             true /* exists */,
-            false /* is_versioned */);
+            false /* is_versioned */,
+            false /* is modified */);
     }
+
+    @Test
+    public void testCalcFingerSVN10() {
+        testCalcFingerSVN(
+            "../fngr-testdir/test-svn-workdir/modified-non-head-versioned-file",
+            true /* exists */,
+            true /* is_versioned */,
+            true /* is modified */);
+    }
+
 }
