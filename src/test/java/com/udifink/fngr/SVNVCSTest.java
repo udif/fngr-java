@@ -60,7 +60,7 @@ public class SVNVCSTest {
     public void testisItMeSVNUnersionedFileInsideVersionedDir() {
         SVNVCS vcs = new SVNVCS();
         assertTrue("Failed to recognize an unversioned file inside a versioned directory in SVN workdir as inside SVN repository",
-            vcs.isItMe(new File("../fngr-testdir/test-svn-workdir/unversioned-dir/versioned-file-in-a-versioned-dir")));
+            vcs.isItMe(new File("../fngr-testdir/test-svn-workdir/versioned-dir/unversioned-file-in-a-versioned-dir")));
     }
 
     @Test

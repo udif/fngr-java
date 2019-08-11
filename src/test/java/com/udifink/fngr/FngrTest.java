@@ -17,6 +17,7 @@ package com.udifink.fngr;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.junit.Test;
 
@@ -24,98 +25,92 @@ public class FngrTest {
     @Test
     public void testCalcFingerPrintUntrackedFile() {
         try {
+            ArrayList<String> tests = new ArrayList<String>();
+            tests.add("/etc/passwd:Failed to identify untracked file as such");
+            tests.add("/etc:Failed to identify untracked directory as such");
             Fngr fngr = new Fngr();
-            VCS vcs = fngr.calcFingerPrint("/etc/passwd");
-            assertTrue("Failed to identify untracked file as such", vcs instanceof NoVCS);
+            VCS vcs;
+            String[] s2;
+            for (String s: tests) {
+                s2 = s.split(":");
+                vcs = fngr.calcFingerPrint(s2[0]);
+                assertTrue(s2[1], vcs instanceof NoVCS);
+            }
         } catch (IOException e) {
             assertTrue("Caught IOException!", false);
         }
     }
 
-    @Test
-    public void testCalcFingerPrintUntrackedDir() {
+    private void testCalcFingerSVN(String path, String errmsg) {
         try {
             Fngr fngr = new Fngr();
-            VCS vcs = fngr.calcFingerPrint("/etc");
-            assertTrue("Failed to identify untracked file as such", vcs instanceof NoVCS);
+            VCS vcs = fngr.calcFingerPrint(path);
+            assertTrue(errmsg, vcs instanceof SVNVCS);
         } catch (IOException e) {
             assertTrue("Caught IOException!", false);
         }
     }
-    /*
+
     @Test
-    public void testisItMeSVNWorkDirRoot() {
-        Fngr fngr = new Fngr();
-        assertTrue("Failed to recognize workdir root as inside SVN repository",
-            vcs.isItMe(new File("../fngr-testdir/test-svn-workdir")));
+    public void testCalcFIngerSVN1() {
+        testCalcFingerSVN(
+            "../fngr-testdir/test-svn-workdir",
+            "Failed to recognize workdir root as inside SVN repository");
     }
 
     @Test
-    public void testisItMeSVNVersionedFile() {
-        Fngr fngr = new Fngr();
-        assertTrue("Failed to recognize versioned SVN file as inside SVN repository",
-            vcs.isItMe(new File("../fngr-testdir/test-svn-workdir/versioned-file")));
+    public void testCalcFIngerSVN2() {
+        testCalcFingerSVN(
+            "../fngr-testdir/test-svn-workdir/versioned-file",
+            "Failed to recognize versioned SVN file as inside SVN repository");
     }
 
     @Test
-    public void testisItMeSVNUnversionedFile() {
-        Fngr fngr = new Fngr();
-        assertTrue("Failed to recognize unversioned SVN file as inside SVN repository",
-            vcs.isItMe(new File("../fngr-testdir/test-svn-workdir/unversioned-file")));
+    public void testCalcFIngerSVN3() {
+        testCalcFingerSVN(
+            "../fngr-testdir/test-svn-workdir/unversioned-file",
+            "Failed to recognize unversioned SVN file as inside SVN repository");
     }
 
     @Test
-    public void testisItMeSVNVersionedDir() {
-        Fngr fngr = new Fngr();
-        assertTrue("Failed to recognize a versioned directory in SVN workdir as inside SVN repository",
-            vcs.isItMe(new File("../fngr-testdir/test-svn-workdir/versioned-dir")));
+    public void testCalcFIngerSVN4() {
+        testCalcFingerSVN(
+            "../fngr-testdir/test-svn-workdir/versioned-dir",
+            "Failed to recognize a versioned directory in SVN workdir as inside SVN repository");
     }
 
     @Test
-    public void testisItMeSVNVersionedFileInsideVersionedDir() {
-        Fngr fngr = new Fngr();
-        assertTrue("Failed to recognize a versioned file inside a versioned directory in SVN workdir as inside SVN repository",
-            vcs.isItMe(new File("../fngr-testdir/test-svn-workdir/versioned-dir/versioned-file-in-a-versioned-dir")));
+    public void testCalcFIngerSVN5() {
+        testCalcFingerSVN(
+            "../fngr-testdir/test-svn-workdir/versioned-dir/versioned-file-in-a-versioned-dir",
+            "Failed to recognize a versioned file inside a versioned directory in SVN workdir as inside SVN repository");
     }
 
     @Test
-    public void testisItMeSVNUnersionedFileInsideVersionedDir() {
-        Fngr fngr = new Fngr();
-        assertTrue("Failed to recognize an unversioned file inside a versioned directory in SVN workdir as inside SVN repository",
-            vcs.isItMe(new File("../fngr-testdir/test-svn-workdir/unversioned-dir/versioned-file-in-a-versioned-dir")));
+    public void testCalcFIngerSVN6() {
+        testCalcFingerSVN(
+            "../fngr-testdir/test-svn-workdir/versioned-dir/unversioned-file-in-a-versioned-dir",
+            "Failed to recognize an unversioned file inside a versioned directory in SVN workdir as inside SVN repository");
     }
 
     @Test
-    public void testisItMeSVNUnversionedDir() {
-        Fngr fngr = new Fngr();
-        assertTrue("Failed to recognize an unversioned directory in SVN workdir as inside SVN repository",
-            vcs.isItMe(new File("../fngr-testdir/test-svn-workdir/unversioned-dir")));
+    public void testCalcFIngerSVN7() {
+        testCalcFingerSVN(
+            "../fngr-testdir/test-svn-workdir/unversioned-dir",
+            "Failed to recognize an unversioned directory in SVN workdir as inside SVN repository");
     }
 
     @Test
-    public void testisItMeSVNNonExistentFileOrDir() {
-        Fngr fngr = new Fngr();
-        assertTrue("Failed to recognize a non existing file/directoryin SVN workdir as inside SVN repository",
-            vcs.isItMe(new File("../fngr-testdir/test-svn-workdir/nonexistent")));
+    public void testCalcFIngerSVN8() {
+        testCalcFingerSVN(
+            "../fngr-testdir/test-svn-workdir/nonexistent",
+            "Failed to recognize a non existing file/directoryin SVN workdir as inside SVN repository");
     }
 
     @Test
-    public void testisItMeSVNUnversionedFileInsideUnversionedDir() {
-        Fngr fngr = new Fngr();
-        assertTrue("Failed to recognize an unversioned file inside an unversioned directory in SVN workdir as inside SVN repository",
-            vcs.isItMe(new File("../fngr-testdir/test-svn-workdir/unversioned-dir/unversioned-file-in-unversioned-dir")));
+    public void testCalcFIngerSVN9() {
+        testCalcFingerSVN(
+            "../fngr-testdir/test-svn-workdir/unversioned-dir/unversioned-file-in-unversioned-dir",
+            "Failed to recognize an unversioned file inside an unversioned directory in SVN workdir as inside SVN repository");
     }
-
-    @Test
-    public void testisItMeNoSVNFile() {
-        Fngr fngr = new Fngr();
-        assertFalse("Failed to recognize an arbitrary file as not inside an SVN repository", vcs.isItMe(new File("/etc/fstab")));
-    }
-
-    @Test
-    public void testisItMeNoSVNDir() {
-        Fngr fngr = new Fngr();
-        assertFalse("Failed to recognize an arbitrary directory as not inside an SVN repository", vcs.isItMe(new File("/etc")));
-    }
-    */
 }
