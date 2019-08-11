@@ -23,15 +23,13 @@ class Fngr {
 
     public VCS calcFingerPrint(String filename) throws IOException {
         File f = new File(filename);
-        if (f.canRead()) {
-            for (VCSTypes v : VCSTypes.values()) {
-                vcs = VCSTypes.newVcs(v);
-                vcs.filename = filename;
-                vcs.in_local_vcs_dir = vcs.isItMe(f);
-                if (vcs.in_local_vcs_dir) {
-                    vcs.calcVcsFingerPrint();
-                    return vcs;
-                }
+        for (VCSTypes v : VCSTypes.values()) {
+            vcs = VCSTypes.newVcs(v);
+            vcs.filename = filename;
+            vcs.in_local_vcs_dir = vcs.isItMe(f);
+            if (vcs.in_local_vcs_dir) {
+                vcs.calcVcsFingerPrint();
+                return vcs;
             }
         }
         assert false : "Should never happen";
