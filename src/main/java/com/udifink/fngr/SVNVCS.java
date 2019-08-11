@@ -21,6 +21,7 @@ import java.io.File;
 
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
+import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNStatus;
 import org.tmatesoft.svn.core.wc2.SvnOperationFactory;
 //import org.tmatesoft.svn.core.SVNException;
@@ -53,6 +54,13 @@ public class SVNVCS extends VCS {
                 .newInstance()
                 .getStatusClient()
                 .doStatus(new File(filename), false);
+            if (s != null) {
+                SVNRevision rev = s.getRevision();
+                is_versioned = s.isVersioned();
+                is_modified = rev.isLocal();
+                date = rev.getDate();
+                revision = rev.toString();
+            }
         //    return s.isVersioned();
         } catch (SVNException e) {
             logger.error("SVNException");
@@ -62,5 +70,9 @@ public class SVNVCS extends VCS {
         //    return status != null ? status.getRevision().getNumber() : -1;
         //}
         //return false; // TODO fix this when we actually implement SVN
+    }
+
+    public String getFingerPrint() {
+        return getVCSType() + ": " + getFilename() + "@" + getRevision() + (getModified() ? " (modified)" : "");
     }
 }

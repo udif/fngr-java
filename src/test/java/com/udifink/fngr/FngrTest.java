@@ -41,76 +41,86 @@ public class FngrTest {
         }
     }
 
-    private void testCalcFingerSVN(String path, String errmsg) {
+    private void testCalcFingerSVN(String path, boolean exists, boolean is_versioned) {
         try {
             Fngr fngr = new Fngr();
             VCS vcs = fngr.calcFingerPrint(path);
-            assertTrue(errmsg, vcs instanceof SVNVCS);
+            assertTrue(path + ": VCS object type failure", vcs instanceof SVNVCS);
+            assertTrue(path + ": 'exists' flag", exists == vcs.exists);
         } catch (IOException e) {
             assertTrue("Caught IOException!", false);
         }
     }
 
     @Test
-    public void testCalcFIngerSVN1() {
+    public void testCalcFingerSVN1() {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir",
-            "Failed to recognize workdir root as inside SVN repository");
+            true /* exists */,
+            false /* is_versioned */);
     }
 
     @Test
-    public void testCalcFIngerSVN2() {
+    public void testCalcFingerSVN2() {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/versioned-file",
-            "Failed to recognize versioned SVN file as inside SVN repository");
+            true /* exists */,
+            true /* is_versioned */);
     }
 
     @Test
-    public void testCalcFIngerSVN3() {
+    public void testCalcFingerSVN3() {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/unversioned-file",
-            "Failed to recognize unversioned SVN file as inside SVN repository");
+            true /* exists */,
+            false /* is_versioned */);
     }
 
     @Test
-    public void testCalcFIngerSVN4() {
+    public void testCalcFingerSVN4() {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/versioned-dir",
-            "Failed to recognize a versioned directory in SVN workdir as inside SVN repository");
+            true /* exists */,
+            true /* is_versioned */);
     }
 
     @Test
-    public void testCalcFIngerSVN5() {
+    public void testCalcFingerSVN5() {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/versioned-dir/versioned-file-in-a-versioned-dir",
-            "Failed to recognize a versioned file inside a versioned directory in SVN workdir as inside SVN repository");
+            true /* exists */,
+            true /* is_versioned */);
     }
 
     @Test
-    public void testCalcFIngerSVN6() {
+    public void testCalcFingerSVN6() {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/versioned-dir/unversioned-file-in-a-versioned-dir",
-            "Failed to recognize an unversioned file inside a versioned directory in SVN workdir as inside SVN repository");
+            true /* exists */,
+            false /* is_versioned */);
     }
 
     @Test
-    public void testCalcFIngerSVN7() {
+    public void testCalcFingerSVN7() {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/unversioned-dir",
-            "Failed to recognize an unversioned directory in SVN workdir as inside SVN repository");
+            true /* exists */,
+            false /* is_versioned */);
     }
 
     @Test
-    public void testCalcFIngerSVN8() {
+    public void testCalcFingerSVN8() {
         testCalcFingerSVN(
             "../fngr-testdir/test-svn-workdir/nonexistent",
-            "Failed to recognize a non existing file/directoryin SVN workdir as inside SVN repository");
+            false /* exists */,
+            false /* is_versioned */);
     }
 
     @Test
-    public void testCalcFIngerSVN9() {
+    public void testCalcFingerSVN9() {
         testCalcFingerSVN(
-            "../fngr-testdir/test-svn-workdir/unversioned-dir/unversioned-file-in-unversioned-dir",
-            "Failed to recognize an unversioned file inside an unversioned directory in SVN workdir as inside SVN repository");
+            "../fngr-testdir/test-svn-workdir/unversioned-dir/unversioned-file-in-an-unversioned-dir",
+            true /* exists */,
+            false /* is_versioned */);
     }
 }

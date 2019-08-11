@@ -18,6 +18,8 @@
 package com.udifink.fngr;
 
 import java.io.File;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +29,12 @@ import org.slf4j.LoggerFactory;
 public abstract class VCS {
     // These are protected fields because we do all the work in the derived classes
     protected String filename;
+    protected Date date;
     protected String revision;
     protected boolean in_local_vcs_dir; // true if file location is within a local repository
-    protected boolean is_versioned; // true if file is tracked by VCS (in_local_vcs_dir must be true)
-    protected boolean is_modified; // true if local file was modified compared to VCS copy (versioned must be true)
+    protected boolean exists; // true if there is such a file (in_local_vcs_dir must be true)
+    protected boolean is_versioned; // true if file is tracked by VCS (exists must be true)
+    protected boolean is_modified; // true if local file was modified compared to VCS copy (is_versioned must be true)
     protected boolean is_file; // true if file, false if dir
 
     protected Logger logger = LoggerFactory.getLogger(VCS.class);
@@ -42,12 +46,19 @@ public abstract class VCS {
 
     protected abstract void calcVcsFingerPrint();
 
+    public boolean getExists() {
+        return exists;
+    }
+
     public boolean getModified() {
         return is_modified;
     }
 
     public String getRevision() {
-        return revision;
+        if (is_versioned)
+            return revision;
+        else
+            return "";
     }
 
     public String getFilename() {
@@ -56,7 +67,5 @@ public abstract class VCS {
 
     public abstract VCSTypes getVCSType();
 
-    public String getFingerPrint() {
-        return getVCSType() + ": " + getFilename() + "@" + getRevision() + (getModified() ? " (modified)" : "");
-    }
+    public abstract String getFingerPrint();
 }

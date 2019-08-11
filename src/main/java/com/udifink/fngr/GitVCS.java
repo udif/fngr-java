@@ -48,4 +48,7 @@ public class GitVCS extends VCS {
 
     }
 
+    public String getFingerPrint() {
+        return getVCSType() + ": " + getFilename() + "(commit: " + getRevision() + ")" + (getModified() ? " (modified)" : "");
+    }
 }

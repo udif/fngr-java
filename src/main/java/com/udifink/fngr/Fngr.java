@@ -26,8 +26,10 @@ class Fngr {
         for (VCSTypes v : VCSTypes.values()) {
             vcs = VCSTypes.newVcs(v);
             vcs.filename = filename;
-            vcs.in_local_vcs_dir = vcs.isItMe(f);
+            vcs.in_local_vcs_dir = vcs.isItMe(f);           
             if (vcs.in_local_vcs_dir) {
+                vcs.exists = f.isDirectory() || f.isFile();
+                vcs.is_file = f.isFile();
                 vcs.calcVcsFingerPrint();
                 return vcs;
             }
