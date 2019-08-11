@@ -33,10 +33,10 @@ public class GitVCS extends VCS {
     }
 
     public boolean isItMe(File f) {
-        FileRepositoryBuilder builder = new FileRepositoryBuilder().findGitDir(f.getAbsoluteFile().getParentFile());
-        if (builder.getGitDir() == null)
-            return false;
         try {
+            FileRepositoryBuilder builder = new FileRepositoryBuilder().findGitDir(f.getCanonicalFile().getParentFile());
+            if (builder.getGitDir() == null)
+                return false;
             Repository repository = builder.setMustExist(true).build();
         } catch (IOException e) {
 
