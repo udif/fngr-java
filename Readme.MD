@@ -1,6 +1,9 @@
 The Fngr library
 ================
 
+[![CircleCI](https://circleci.com/gh/udif/fngr-java/tree/master.svg?style=svg&circle-token=61071651b2a87152a1b09a77e823a15951d6960e)](https://circleci.com/gh/udif/fngr-java/tree/master)
+
+
 This library is intended to help tool writer get a "fingerprint" of their input files.
 
 When writing a tool that reads an input file "a" and generates an output file "b" (preferrably text),
@@ -27,3 +30,4 @@ TODO
 Setup
 -----
 Before running the test, please run `./build_test_dir.sh` , which will create a local SVN repository and a working copy, complete with various combination of local and versioned files and directories, which are used by the tests.
+
