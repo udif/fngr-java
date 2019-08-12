@@ -1,4 +1,8 @@
 apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.udifink.fngr'
+version = '0.9-SNAPSHOT'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -26,8 +30,6 @@ dependencies {
     // 'test.useTestNG()' to your build script.
     testCompile 'junit:junit:4.12'
 }
-
-version = '1.0'
 
 //create a single Jar with all dependencies
 task fatJar(type: Jar) {
