@@ -41,13 +41,13 @@ public class FngrTest {
         }
     }
 
-    private void testCalcFingerSVN(
-            String path, boolean exists, boolean is_versioned, boolean is_modified,
+    private void testCalcVcsFingerPrint(
+            String path, Class <?> cls, boolean exists, boolean is_versioned, boolean is_modified,
             boolean is_file, String revision) {
         try {
             Fngr fngr = new Fngr();
             VCS vcs = fngr.calcFingerPrint(path);
-            assertTrue(path + ": VCS object type failure", vcs instanceof SVNVCS);
+            assertTrue(path + ": VCS object type failure", vcs.getClass() == cls);
             assertTrue(path + ": 'exists' flag", exists == vcs.exists);
             assertTrue(path + ": 'is_file' flag", is_file == vcs.is_file);
             if (!exists)
@@ -64,8 +64,9 @@ public class FngrTest {
 
     @Test
     public void testCalcFingerSVN1() {
-        testCalcFingerSVN(
+        testCalcVcsFingerPrint(
             "../fngr-testdir/test-svn-workdir",
+            SVNVCS.class,
             true /* exists */,
             true /* is_versioned */,
             false /* is modified */,
@@ -75,8 +76,9 @@ public class FngrTest {
 
     @Test
     public void testCalcFingerSVN2() {
-        testCalcFingerSVN(
+        testCalcVcsFingerPrint(
             "../fngr-testdir/test-svn-workdir/non-head-versioned-file",
+            SVNVCS.class,
             true /* exists */,
             true /* is_versioned */,
             false /* is modified */,
@@ -86,8 +88,9 @@ public class FngrTest {
 
     @Test
     public void testCalcFingerSVN3() {
-        testCalcFingerSVN(
+        testCalcVcsFingerPrint(
             "../fngr-testdir/test-svn-workdir/unversioned-file",
+            SVNVCS.class,
             true /* exists */,
             false /* is_versioned */,
             false /* is modified */,
@@ -97,8 +100,9 @@ public class FngrTest {
 
     @Test
     public void testCalcFingerSVN4() {
-        testCalcFingerSVN(
+        testCalcVcsFingerPrint(
             "../fngr-testdir/test-svn-workdir/versioned-dir",
+            SVNVCS.class,
             true /* exists */,
             true /* is_versioned */,
             false /* is modified */,
@@ -108,8 +112,9 @@ public class FngrTest {
 
     @Test
     public void testCalcFingerSVN5() {
-        testCalcFingerSVN(
+        testCalcVcsFingerPrint(
             "../fngr-testdir/test-svn-workdir/versioned-dir/versioned-file-in-a-versioned-dir",
+            SVNVCS.class,
             true /* exists */,
             true /* is_versioned */,
             false /* is modified */,
@@ -119,8 +124,9 @@ public class FngrTest {
 
     @Test
     public void testCalcFingerSVN6() {
-        testCalcFingerSVN(
+        testCalcVcsFingerPrint(
             "../fngr-testdir/test-svn-workdir/versioned-dir/unversioned-file-in-a-versioned-dir",
+            SVNVCS.class,
             true /* exists */,
             false /* is_versioned */,
             false /* is modified */,
@@ -130,8 +136,9 @@ public class FngrTest {
 
     @Test
     public void testCalcFingerSVN7() {
-        testCalcFingerSVN(
+        testCalcVcsFingerPrint(
             "../fngr-testdir/test-svn-workdir/unversioned-dir",
+            SVNVCS.class,
             true /* exists */,
             false /* is_versioned */,
             false /* is modified */,
@@ -141,8 +148,9 @@ public class FngrTest {
 
     @Test
     public void testCalcFingerSVN8() {
-        testCalcFingerSVN(
+        testCalcVcsFingerPrint(
             "../fngr-testdir/test-svn-workdir/nonexistent",
+            SVNVCS.class,
             false /* exists */,
             false /* is_versioned */,
             false /* is modified */,
@@ -152,8 +160,9 @@ public class FngrTest {
 
     @Test
     public void testCalcFingerSVN9() {
-        testCalcFingerSVN(
+        testCalcVcsFingerPrint(
             "../fngr-testdir/test-svn-workdir/unversioned-dir/unversioned-file-in-an-unversioned-dir",
+            SVNVCS.class,
             true /* exists */,
             false /* is_versioned */,
             false /* is modified */,
@@ -163,8 +172,9 @@ public class FngrTest {
 
     @Test
     public void testCalcFingerSVN10() {
-        testCalcFingerSVN(
+        testCalcVcsFingerPrint(
             "../fngr-testdir/test-svn-workdir/modified-non-head-versioned-file",
+            SVNVCS.class,
             true /* exists */,
             true /* is_versioned */,
             true /* is modified */,

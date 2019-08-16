@@ -18,6 +18,7 @@
 package com.udifink.fngr;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -44,7 +45,7 @@ public abstract class VCS {
     // Also, if true, set the protected fields above
     protected abstract boolean isItMe(File f);
 
-    protected abstract void calcVcsFingerPrint();
+    protected abstract void calcVcsFingerPrint() throws IOException;
 
     public boolean getExists() {
         return exists;
