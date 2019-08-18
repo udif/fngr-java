@@ -26,8 +26,44 @@ public class GitVCSTest {
     }
 
     @Test
+    public void testisItMeGitDir() {
+        GitVCS vcs = new GitVCS();
+        assertTrue("Failed!", vcs.isItMe(new File("src/main/java")));
+    }
+
+    @Test
+    public void testisItMeGitFileInGitDir() {
+        GitVCS vcs = new GitVCS();
+        assertTrue("Failed!", vcs.isItMe(new File("src/main/java/com/udifink/fngr/Fngr.java")));
+    }
+
+    @Test
+    public void testisItMeNoGitFileInNoGitDir() {
+        GitVCS vcs = new GitVCS();
+        assertTrue("Failed!", vcs.isItMe(new File("bin/test/com/udifink/fngr/GitVCSTest.class")));
+    }
+
+    @Test
+    public void testisItMeGitNoDir() {
+        GitVCS vcs = new GitVCS();
+        assertTrue("Failed!", vcs.isItMe(new File("bin")));
+    }
+
+    @Test
+    public void testisItMeGitNoFile() {
+        GitVCS vcs = new GitVCS();
+        assertTrue("Failed!", vcs.isItMe(new File("xxxxxx.xxxxx")));
+    }
+
+    @Test
     public void testisItMeNoGitFile() {
         GitVCS vcs = new GitVCS();
         assertFalse("Failed!", vcs.isItMe(new File("/etc/fstab")));
+    }
+
+    @Test
+    public void testisItMeNoFile() {
+        GitVCS vcs = new GitVCS();
+        assertFalse("Failed!", vcs.isItMe(new File("/xxxxxx")));
     }
 }
