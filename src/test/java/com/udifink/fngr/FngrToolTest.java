@@ -20,13 +20,13 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-public class FngrDemoTest {
+public class FngrToolTest {
 
     @Test
     public void testMain() throws IOException {
         String args[] = new String[2];
         args[0] = "main";
         args[1] = "../fngr-testdir/test-svn-workdir/modified-non-head-versioned-file";
-        FngrDemo.main(args);
+        FngrTool.main(args);
     }
 }

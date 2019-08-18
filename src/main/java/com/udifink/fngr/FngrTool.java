@@ -16,7 +16,7 @@ package com.udifink.fngr;
 
 import java.io.IOException;
 
-class FngrDemo {
+class FngrTool {
     public static void main(String[] args) throws IOException {
         if (args.length != 2) {
             System.out.println("Usage: " + args[0] + " <file>");
