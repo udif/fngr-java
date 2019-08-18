@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 //
 public abstract class VCS {
     // These are protected fields because we do all the work in the derived classes
+    protected File f;
     protected String filename;
     protected Date date;
     protected String revision;

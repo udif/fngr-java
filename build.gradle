@@ -17,6 +17,7 @@ repositories {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
+    compile 'commons-io:commons-io:2.6'
     compile 'org.eclipse.jgit:org.eclipse.jgit:5.4.0.201906121030-r'
     compile 'org.tmatesoft.svnkit:svnkit:1.10.1'
     // The production code uses the SLF4J logging API at compile time

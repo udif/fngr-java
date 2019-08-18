@@ -1,14 +1,19 @@
 #/bin/bash
 command -v svn >/dev/null 2>&1 || { echo >&2 "SVN required, but not installed."; exit 1; }
+command -v git >/dev/null 2>&1 || { echo >&2 "Git required, but not installed."; exit 1; }
 
-SVN_ROOT=../fngr-testdir
-SVN_ROOT=`readlink -f $SVN_ROOT`
-[ ! -d $SVN_ROOT ] && mkdir -p $SVN_ROOT
-rm -rf $SVN_ROOT/test-svn
-rm -rf $SVN_ROOT/test-svn-workdir
-svnadmin create $SVN_ROOT/test-svn/
-svn checkout file://$SVN_ROOT/test-svn/ $SVN_ROOT/test-svn-workdir/
-pushd $SVN_ROOT/test-svn-workdir
+FNGR_TEST_ROOT=../fngr-testdir
+FNGR_TEST_ROOT=`readlink -f $FNGR_TEST_ROOT`
+[ ! -d $FNGR_TEST_ROOT ] && mkdir -p $FNGR_TEST_ROOT
+
+#
+# SVN
+#
+rm -rf $FNGR_TEST_ROOT/test-svn
+rm -rf $FNGR_TEST_ROOT/test-svn-workdir
+svnadmin create $FNGR_TEST_ROOT/test-svn/
+svn checkout file://$FNGR_TEST_ROOT/test-svn/ $FNGR_TEST_ROOT/test-svn-workdir/
+pushd $FNGR_TEST_ROOT/test-svn-workdir
 
 echo "non-head-versioned-file, 1st revision" >non-head-versioned-file
 svn add non-head-versioned-file
@@ -50,4 +55,55 @@ echo "An unversioned file in a versioned dir" >versioned-dir/unversioned-file-in
 
 mkdir unversioned-dir
 echo "An unversioned file in an unversioned dir" >unversioned-dir/unversioned-file-in-an-unversioned-dir
+popd
+
+#
+# Git
+#
+rm -rf $FNGR_TEST_ROOT/test-git
+mkdir $FNGR_TEST_ROOT/test-git
+pushd $FNGR_TEST_ROOT/test-git
+git init
+
+echo "another versioned file" >head-versioned-file
+git add -A
+git commit -m "committed another file"
+
+echo "another versioned file" >modified-head-versioned-file
+git add -A
+git commit -m "committed another file"
+
+echo "non-head-versioned-file, 1st revision" >non-head-versioned-file
+git add -A
+git commit -m "1st commit of non-head-versioned-file"
+
+echo "non-head-versioned-file, 2nd revision" >non-head-versioned-file
+git add -u
+svn commit -m "another commit of non-head-versioned-file"
+git checkout HEAD^ non-head-versioned-file
+
+echo "modified-non-head-versioned-file, 1st revision" >modified-non-head-versioned-file
+git add modified-non-head-versioned-file
+git commit -m "1st commit of modified-non-head-versioned-file"
+
+echo "modified-non-head-versioned-file, 2nd revision" >modified-non-head-versioned-file
+git add modified-non-head-versioned-file
+git commit -m "another commit of modified-non-head-versioned-file"
+git checkout HEAD^ modified-non-head-versioned-file
+
+echo "Now lets modify it" >>modified-non-head-versioned-file
+
+echo "Now lets modify it" >>modified-head-versioned-file
+
+echo "unversioned-file" >unversioned-file
+
+mkdir versioned-dir
+echo "A versioned file in a directory" >versioned-dir/versioned-file-in-a-versioned-dir
+git add versioned-dir/versioned-file-in-a-versioned-dir
+git commit -m "Added a versioned file in a versioned dir"
+echo "An unversioned file in a versioned dir" >versioned-dir/unversioned-file-in-a-versioned-dir
+
+mkdir unversioned-dir
+echo "An unversioned file in an unversioned dir" >unversioned-dir/unversioned-file-in-an-unversioned-dir
+
 popd

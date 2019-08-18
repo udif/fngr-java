@@ -19,19 +19,18 @@ package com.udifink.fngr;
 
 import java.io.File;
 import java.io.IOException;
+import org.apache.commons.io.FileUtils;
 import java.nio.file.Path;
-
 //import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectLoader;
+import org.eclipse.jgit.lib.ObjectInserter;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
-//import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevWalk;
 
 public class GitVCS extends VCS {
@@ -62,24 +61,34 @@ public class GitVCS extends VCS {
     // https://github.com/centic9/jgit-cookbook/blob/276ad0fecb4f1c616ef459ed8b7feb6d503724eb/src/main/java/org/dstadler/jgit/api/ReadFileFromCommit.java
     //
     final protected void calcVcsFingerPrint() throws IOException {
+
+        byte[] data = FileUtils.readFileToByteArray(f);
+        ObjectInserter.Formatter f = new ObjectInserter.Formatter();
+        ObjectId id = f.idFor(Constants.OBJ_BLOB, data);
+        String hash = id.getName(); // same as 'git hash-object <file>'
+
         ObjectId headCommit = repository.resolve(Constants.HEAD);
         try (RevWalk revWalk = new RevWalk(repository)) {
-            RevCommit commit = revWalk.parseCommit(headCommit);
-            RevTree tree = commit.getTree();
-            try (TreeWalk treeWalk = new TreeWalk(repository)) {
-                treeWalk.addTree(tree);
-                treeWalk.setRecursive(true);
-                treeWalk.setFilter(PathFilter.create(filterPath.toString()));
-                if (!treeWalk.next()) {
-                    throw new IllegalStateException("Did not find expected file '" + filename + "'");
+            revWalk.markStart(revWalk.parseCommit(headCommit));
+            for (RevCommit commit : revWalk) {
+                RevTree tree = commit.getTree();
+                try (TreeWalk treeWalk = new TreeWalk(repository)) {
+                    treeWalk.addTree(tree);
+                    treeWalk.setRecursive(true);
+                    treeWalk.setFilter(PathFilter.create(filterPath.toString()));
+                    // Since we have an exact filter, a single treeWalk.next()
+                    // *MUST* bring us to the file.
+                    treeWalk.next();
+                    ObjectId objectId = treeWalk.getObjectId(0);
+                    String s = objectId.name();
+                    if (s.equalsIgnoreCase(hash)) {
+                        is_versioned = true;
+                        // save last (earliest) commit ID that still matches the file
+                        revision = commit.name();
+                    }
                 }
-                ObjectId objectId = treeWalk.getObjectId(0);
-                ObjectLoader loader = repository.open(objectId);
-
-                // and then one can the loader to read the file
-                loader.copyTo(System.out);
-
             }
+            revWalk.dispose();
         }
     }
 

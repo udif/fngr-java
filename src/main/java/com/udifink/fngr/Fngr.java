@@ -27,6 +27,7 @@ class Fngr {
         for (VCSTypes v : VCSTypes.values()) {
             vcs = VCSTypes.newVcs(v);
             vcs.filename = canonical_filename;
+            vcs.f = f;
             vcs.in_local_vcs_dir = vcs.isItMe(f);           
             if (vcs.in_local_vcs_dir) {
                 vcs.exists = f.isDirectory() || f.isFile();

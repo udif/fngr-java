@@ -182,4 +182,16 @@ public class FngrTest {
             "3" /* revision */);
     }
 
+    @Test
+    public void testCalcFingerGit1() {
+        testCalcVcsFingerPrint(
+            "../fngr-testdir/test-git/non-head-versioned-file",
+            GitVCS.class,
+            true /* exists */,
+            true /* is_versioned */,
+            false /* is modified */,
+            true /* is file */,
+            "7945dc7ccb5deb4a14a9e58592e04052edafbb3e" /* revision */);
+    }
+
 }
