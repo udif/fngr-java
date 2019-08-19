@@ -60,9 +60,19 @@ popd
 #
 # Git
 #
+
 rm -rf $FNGR_TEST_ROOT/test-git $FNGR_TEST_ROOT/test-git-data
 mkdir  $FNGR_TEST_ROOT/test-git $FNGR_TEST_ROOT/test-git-data $FNGR_TEST_ROOT/test-git-data/versioned-dir
 pushd $FNGR_TEST_ROOT/test-git
+
+git config --get user.name
+if [ $? -eq 1 ]
+then
+  git config user.email testuser@testuser.command
+  git config user.name  "Test username"
+fi
+
+
 git init
 
 echo "another versioned file" >head-versioned-file
