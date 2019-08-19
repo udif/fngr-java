@@ -16,9 +16,13 @@ package com.udifink.fngr;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 public class FngrTest {
@@ -47,17 +51,17 @@ public class FngrTest {
         try {
             Fngr fngr = new Fngr();
             VCS vcs = fngr.calcFingerPrint(path);
-            assertTrue(path + ": VCS object type failure", vcs.getClass() == cls);
-            assertTrue(path + ": 'exists' flag", exists == vcs.exists);
-            assertTrue(path + ": 'is_file' flag", is_file == vcs.is_file);
+            assertTrue(path + ": VCS object type failure : expected '" + cls.toString() + "', got '" + vcs.getClass().toString() + "'", vcs.getClass() == cls);
+            assertTrue(path + ": 'exists' : expected '" + String.valueOf(exists) + "', got '" + String.valueOf(vcs.exists) + "'", exists == vcs.exists);
+            assertTrue(path + ": 'is_file' : expected '" + String.valueOf(is_file) + "', got '" + String.valueOf(vcs.is_file) + "'", is_file == vcs.is_file);
             if (!exists)
                 return;
-            assertTrue(path + ": 'is_versioned' flag", is_versioned == vcs.is_versioned);
+            assertTrue(path + ": 'is_versioned' : expected '" + String.valueOf(is_versioned) + "', got '" + String.valueOf(vcs.is_versioned) + "'", is_versioned == vcs.is_versioned);
             if (!is_versioned)
                 return;
-                    assertTrue(path + ": 'Revision'", revision.equals(vcs.revision));
-                    assertTrue(path + ": 'is_modified' flag", is_modified == vcs.is_modified);
-        } catch (IOException e) {
+                    assertTrue(path + ": 'Revision' : expected '" + revision + "', got '" + vcs.revision + "'", revision.equals(vcs.revision));
+                    assertTrue(path + ": 'is_modified' : expected '" + String.valueOf(is_modified) + "', got '" + String.valueOf(vcs.is_modified) + "'", is_modified == vcs.is_modified);
+                } catch (IOException e) {
             assertTrue("Caught IOException!", false);
         }
     }
@@ -184,14 +188,92 @@ public class FngrTest {
 
     @Test
     public void testCalcFingerGit1() {
-        testCalcVcsFingerPrint(
-            "../fngr-testdir/test-git/non-head-versioned-file",
-            GitVCS.class,
-            true /* exists */,
-            true /* is_versioned */,
-            false /* is modified */,
-            true /* is file */,
-            "7945dc7ccb5deb4a14a9e58592e04052edafbb3e" /* revision */);
+        String s = "non-head-versioned-file";
+        try {
+            String revision = new String ( Files.readAllBytes( Paths.get("../fngr-testdir/test-git-data/" + s) ) ).replaceAll("\n", "");
+            testCalcVcsFingerPrint(
+                "../fngr-testdir/test-git/" + s,
+                GitVCS.class,
+                true /* exists */,
+                true /* is_versioned */,
+                false /* is modified */,
+                true /* is file */,
+                revision /* revision */);
+        } catch (IOException e) {
+            assertTrue("Caught IOException!", false);
+        }
     }
 
+
+    @Test
+    public void testCalcFingerGit2() {
+        String s = "head-versioned-file";
+        try {
+            String revision = new String ( Files.readAllBytes( Paths.get("../fngr-testdir/test-git-data/" + s) ) ).replaceAll("\n", "");
+            testCalcVcsFingerPrint(
+                "../fngr-testdir/test-git/" + s,
+                GitVCS.class,
+                true /* exists */,
+                true /* is_versioned */,
+                false /* is modified */,
+                true /* is file */,
+                revision /* revision */);
+        } catch (IOException e) {
+            assertTrue("Caught IOException!", false);
+        }
+    }
+
+    @Test
+    public void testCalcFingerGit3() {
+        String s = "modified-head-versioned-file";
+        try {
+            String revision = new String ( Files.readAllBytes( Paths.get("../fngr-testdir/test-git-data/" + s) ) ).replaceAll("\n", "");
+            testCalcVcsFingerPrint(
+                "../fngr-testdir/test-git/" + s,
+                GitVCS.class,
+                true /* exists */,
+                true /* is_versioned */,
+                true /* is modified */,
+                true /* is file */,
+                revision /* revision */);
+        } catch (IOException e) {
+            assertTrue("Caught IOException!", false);
+        }
+    }
+
+    @Test
+    public void testCalcFingerGit5() {
+        String s = "modified-non-head-versioned-file";
+        try {
+            String revision = new String ( Files.readAllBytes( Paths.get("../fngr-testdir/test-git-data/" + s) ) ).replaceAll("\n", "");
+            testCalcVcsFingerPrint(
+                "../fngr-testdir/test-git/" + s,
+                GitVCS.class,
+                true /* exists */,
+                true /* is_versioned */,
+                true /* is modified */,
+                true /* is file */,
+                revision /* revision */);
+        } catch (IOException e) {
+            assertTrue("Caught IOException!", false);
+        }
+    }
+
+    @Test
+    public void testCalcFingerGit6() {
+        String s = "versioned-dir/versioned-file-in-a-versioned-dir";
+        try {
+            String revision = new String ( Files.readAllBytes( Paths.get("../fngr-testdir/test-git-data/" + s) ) ).replaceAll("\n", "");
+            testCalcVcsFingerPrint(
+                "../fngr-testdir/test-git/" + s,
+                GitVCS.class,
+                true /* exists */,
+                true /* is_versioned */,
+                false /* is modified */,
+                true /* is file */,
+                revision /* revision */);
+        } catch (IOException e) {
+            assertTrue("Caught IOException!", false);
+        }
+    }
 }

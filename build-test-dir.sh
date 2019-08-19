@@ -60,50 +60,59 @@ popd
 #
 # Git
 #
-rm -rf $FNGR_TEST_ROOT/test-git
-mkdir $FNGR_TEST_ROOT/test-git
+rm -rf $FNGR_TEST_ROOT/test-git $FNGR_TEST_ROOT/test-git-data
+mkdir  $FNGR_TEST_ROOT/test-git $FNGR_TEST_ROOT/test-git-data $FNGR_TEST_ROOT/test-git-data/versioned-dir
 pushd $FNGR_TEST_ROOT/test-git
 git init
 
 echo "another versioned file" >head-versioned-file
 git add -A
-git commit -m "committed another file"
+git commit -m "1st commit of 'head-versioned-file'"
+git rev-parse HEAD >../test-git-data/head-versioned-file
 
 echo "another versioned file" >modified-head-versioned-file
 git add -A
-git commit -m "committed another file"
+git commit -m "1st commit of 'modified-head-versioned-file'"
 
 echo "non-head-versioned-file, 1st revision" >non-head-versioned-file
 git add -A
-git commit -m "1st commit of non-head-versioned-file"
+git commit -m "1st commit of 'non-head-versioned-file'"
+git rev-parse HEAD >../test-git-data/non-head-versioned-file
 
 echo "non-head-versioned-file, 2nd revision" >non-head-versioned-file
 git add -u
-svn commit -m "another commit of non-head-versioned-file"
-git checkout HEAD^ non-head-versioned-file
-
-echo "modified-non-head-versioned-file, 1st revision" >modified-non-head-versioned-file
-git add modified-non-head-versioned-file
-git commit -m "1st commit of modified-non-head-versioned-file"
-
-echo "modified-non-head-versioned-file, 2nd revision" >modified-non-head-versioned-file
-git add modified-non-head-versioned-file
-git commit -m "another commit of modified-non-head-versioned-file"
-git checkout HEAD^ modified-non-head-versioned-file
-
-echo "Now lets modify it" >>modified-non-head-versioned-file
-
-echo "Now lets modify it" >>modified-head-versioned-file
-
-echo "unversioned-file" >unversioned-file
+git commit -m "2nd commit of 'non-head-versioned-file'"
 
 mkdir versioned-dir
 echo "A versioned file in a directory" >versioned-dir/versioned-file-in-a-versioned-dir
 git add versioned-dir/versioned-file-in-a-versioned-dir
 git commit -m "Added a versioned file in a versioned dir"
-echo "An unversioned file in a versioned dir" >versioned-dir/unversioned-file-in-a-versioned-dir
+git rev-parse HEAD >../test-git-data/versioned-dir/versioned-file-in-a-versioned-dir
 
 mkdir unversioned-dir
 echo "An unversioned file in an unversioned dir" >unversioned-dir/unversioned-file-in-an-unversioned-dir
+
+echo "modified-non-head-versioned-file, 1st revision" >modified-non-head-versioned-file
+git add modified-non-head-versioned-file
+git commit -m "1st commit of 'modified-non-head-versioned-file'"
+
+echo "modified-non-head-versioned-file, 2nd revision" >modified-non-head-versioned-file
+git add modified-non-head-versioned-file
+git commit -m "2nd commit of 'modified-non-head-versioned-file'"
+git checkout HEAD^ modified-non-head-versioned-file
+
+echo "Now lets modify it" >>modified-non-head-versioned-file
+git hash-object modified-non-head-versioned-file >../test-git-data/modified-non-head-versioned-file
+
+echo "Now lets modify it" >>modified-head-versioned-file
+git hash-object modified-head-versioned-file >../test-git-data/modified-head-versioned-file
+
+echo "unversioned-file" >unversioned-file
+git hash-object unversioned-file >../test-git-data/unversioned-file
+
+echo "An unversioned file in a versioned dir" >versioned-dir/unversioned-file-in-a-versioned-dir
+git hash-object unversioned-file >../test-git-data/versioned-dir/unversioned-file-in-a-versioned-dir
+
+git checkout `cat ../test-git-data/non-head-versioned-file` non-head-versioned-file
 
 popd

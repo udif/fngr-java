@@ -70,6 +70,7 @@ public class GitVCS extends VCS {
         ObjectId headCommit = repository.resolve(Constants.HEAD);
         try (RevWalk revWalk = new RevWalk(repository)) {
             revWalk.markStart(revWalk.parseCommit(headCommit));
+            is_modified = true;
             for (RevCommit commit : revWalk) {
                 RevTree tree = commit.getTree();
                 try (TreeWalk treeWalk = new TreeWalk(repository)) {
@@ -79,16 +80,21 @@ public class GitVCS extends VCS {
                     // Since we have an exact filter, a single treeWalk.next()
                     // *MUST* bring us to the file.
                     treeWalk.next();
+                    is_versioned = true;
                     ObjectId objectId = treeWalk.getObjectId(0);
                     String s = objectId.name();
                     if (s.equalsIgnoreCase(hash)) {
-                        is_versioned = true;
+                        is_modified = false;
                         // save last (earliest) commit ID that still matches the file
                         revision = commit.name();
                     }
                 }
             }
             revWalk.dispose();
+            if (is_modified) {
+                // if not modified, return hash-object result instead of commit ID
+                revision = hash;
+            }
         }
     }
 
