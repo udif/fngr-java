@@ -46,5 +46,6 @@ jobs:
       - run: gradle jacocoTestReport
       - store_artifacts:
           path: build/reports/tests/test
+      - store_artifacts:
           path: build/jacocoHtml/
 
