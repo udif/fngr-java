@@ -32,11 +32,13 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
+import info.debatty.java.stringsimilarity.Levenshtein;
 
 public class GitVCS extends VCS {
     private Repository repository;
     File workTree;
     Path filterPath;
+    Levenshtein levenshtein = new Levenshtein();
 
     public VCSTypes getVCSType() {
         return VCSTypes.GIT;
@@ -63,6 +65,7 @@ public class GitVCS extends VCS {
     final protected void calcVcsFingerPrint() throws IOException {
 
         byte[] data = FileUtils.readFileToByteArray(f);
+        String str = data.toString();
         ObjectInserter.Formatter f = new ObjectInserter.Formatter();
         ObjectId id = f.idFor(Constants.OBJ_BLOB, data);
         String hash = id.getName(); // same as 'git hash-object <file>'
@@ -82,6 +85,7 @@ public class GitVCS extends VCS {
                     treeWalk.next();
                     is_versioned = true;
                     ObjectId objectId = treeWalk.getObjectId(0);
+                    double d = levenshtein.distance(str, "My $tring");
                     String s = objectId.name();
                     if (s.equalsIgnoreCase(hash)) {
                         is_modified = false;
@@ -99,6 +103,17 @@ public class GitVCS extends VCS {
     }
 
     public String getFingerPrint() {
-        return getVCSType() + ": " + getFilename() + "(commit: " + getRevision() + ")" + (getModified() ? " (modified)" : "");
+        String result = getVCSType() + ": " +  filename;
+        if (!exists) {
+            return result + " (no object, just a path)";
+        }
+        if (!is_versioned) {
+            result += " (not versioned, git-hash: ";
+        } else if (is_modified) {
+            result += " (modified, git-hash: ";
+        } else if (is_file) {
+            result += " (commit: ";
+        }
+        return result + revision + " )";
     }
 }

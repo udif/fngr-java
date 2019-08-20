@@ -44,6 +44,7 @@ dependencies {
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'org.slf4j:slf4j-simple:1.7.27'
+    compile 'info.debatty:java-string-similarity:1.2.1'
 
 
     // Declare the dependency for your favourite test framework you want to use in your tests.
@@ -58,7 +59,7 @@ task fatJar(type: Jar) {
 	manifest {
         attributes 'Implementation-Title': 'Fngr library ',
             'Implementation-Version': version,
-            'Main-Class': 'com.udifink.fngr.FngrDemo'
+            'Main-Class': 'com.udifink.fngr.FngrTool'
     }
     baseName = project.name + '-all'
     doFirst {

@@ -18,8 +18,8 @@ import java.io.IOException;
 
 class FngrTool {
     public static void main(String[] args) throws IOException {
-        if (args.length != 2) {
-            System.out.println("Usage: " + args[0] + " <file>");
+        if (args.length != 1) {
+            System.out.println("Usage: " + FngrTool.class.getName() + " <file>");
             System.exit(1);
         }
 
