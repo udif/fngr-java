@@ -65,10 +65,11 @@ public class GitVCS extends VCS {
     final protected void calcVcsFingerPrint() throws IOException {
 
         byte[] data = FileUtils.readFileToByteArray(f);
-        String str = data.toString();
+        //String str = data.toString(); // will be used soon!
         ObjectInserter.Formatter f = new ObjectInserter.Formatter();
         ObjectId id = f.idFor(Constants.OBJ_BLOB, data);
         String hash = id.getName(); // same as 'git hash-object <file>'
+        f.close();
 
         ObjectId headCommit = repository.resolve(Constants.HEAD);
         try (RevWalk revWalk = new RevWalk(repository)) {
@@ -85,7 +86,7 @@ public class GitVCS extends VCS {
                     treeWalk.next();
                     is_versioned = true;
                     ObjectId objectId = treeWalk.getObjectId(0);
-                    double d = levenshtein.distance(str, "My $tring");
+                    //double d = levenshtein.distance(str, "My $tring"); // set as placeholder, will be used soon!
                     String s = objectId.name();
                     if (s.equalsIgnoreCase(hash)) {
                         is_modified = false;
