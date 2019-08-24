@@ -20,7 +20,7 @@ $ cat a.out
 Features:
 ---------
 * SVN Support
-* Git support (work in progress)
+* Git support
 * Plain Files support (but detect if they are within a Version controlled tree)
 * Automatically detect what version control a file is under.
 * Report back the exact revision of the file
@@ -28,7 +28,6 @@ Features:
 
 TODO
 ----
-* Complete Git support
 * Java, C++, Python versions (should will appear on separate repositories?)
 * JavaDoc
 * Report file fingerprint (md5sum, sha1, etc.)
