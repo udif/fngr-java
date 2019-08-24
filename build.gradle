@@ -1,6 +1,11 @@
-apply plugin: 'java'
+plugins {
+  id 'com.github.johnrengelman.shadow' version '5.1.0'
+  id 'java'
+}
+
 apply plugin: 'maven'
 apply plugin: 'jacoco'
+
 
 jacoco {
     toolVersion = "0.8.4"
@@ -72,4 +77,13 @@ task fatJar(type: Jar) {
     }
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
     with jar
+}
+
+shadowJar {
+	manifest {
+        attributes 'Implementation-Title': 'Fngr library ',
+            'Implementation-Version': version,
+            'Main-Class': 'com.udifink.fngr.FngrTool'
+    }
+  minimize()
 }
