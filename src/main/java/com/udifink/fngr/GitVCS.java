@@ -28,17 +28,17 @@ import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
+import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
-import info.debatty.java.stringsimilarity.Levenshtein;
 
 public class GitVCS extends VCS {
     private Repository repository;
     File workTree;
     Path filterPath;
-    Levenshtein levenshtein = new Levenshtein();
+    private static final int MAX_SIZE = 100000; // maximum size to be checked by the Levenshtein allgorith
 
     public VCSTypes getVCSType() {
         return VCSTypes.GIT;
@@ -68,14 +68,16 @@ public class GitVCS extends VCS {
         //String str = data.toString(); // will be used soon!
         ObjectInserter.Formatter f = new ObjectInserter.Formatter();
         ObjectId id = f.idFor(Constants.OBJ_BLOB, data);
-        String hash = id.getName(); // same as 'git hash-object <file>'
+        hash = id.getName(); // same as 'git hash-object <file>'
         f.close();
 
         ObjectId headCommit = repository.resolve(Constants.HEAD);
         try (RevWalk revWalk = new RevWalk(repository)) {
             revWalk.markStart(revWalk.parseCommit(headCommit));
             is_modified = true;
+            int min_d = Integer.MAX_VALUE;
             for (RevCommit commit : revWalk) {
+                logger.debug("RevCommit: " + commit.name());
                 RevTree tree = commit.getTree();
                 try (TreeWalk treeWalk = new TreeWalk(repository)) {
                     treeWalk.addTree(tree);
@@ -83,23 +85,36 @@ public class GitVCS extends VCS {
                     treeWalk.setFilter(PathFilter.create(filterPath.toString()));
                     // Since we have an exact filter, a single treeWalk.next()
                     // *MUST* bring us to the file.
-                    treeWalk.next();
+                    if (!treeWalk.next())
+                        continue;
                     is_versioned = true;
                     ObjectId objectId = treeWalk.getObjectId(0);
-                    //double d = levenshtein.distance(str, "My $tring"); // set as placeholder, will be used soon!
                     String s = objectId.name();
                     if (s.equalsIgnoreCase(hash)) {
                         is_modified = false;
                         // save last (earliest) commit ID that still matches the file
                         revision = commit.name();
+                        logger.debug("Match: " + commit.name());
+                    } else {
+                        // We already walked past earliest commit that matched
+                        if (!is_modified) {
+                            revWalk.dispose();
+                            return;
+                        }
+                        ObjectLoader loader = repository.open(objectId);
+                        if (loader.getSize() > MAX_SIZE)
+                            logger.warn("Large file, using only first " + String.valueOf(MAX_SIZE) + " bytes");
+                        // get file match score, check only 1st 100K
+                        int d = Levenshtein.distance(data, loader.getCachedBytes(), 0, 0, MAX_SIZE, MAX_SIZE);
+                        if (d <= min_d) { // we go from new to old, so get earliest match
+                            logger.debug("Partial Match: (" + String.valueOf(d) + ") " + commit.name());
+                            revision = commit.name();
+                            min_d = d;
+                        }
                     }
                 }
             }
             revWalk.dispose();
-            if (is_modified) {
-                // if not modified, return hash-object result instead of commit ID
-                revision = hash;
-            }
         }
     }
 
@@ -109,12 +124,13 @@ public class GitVCS extends VCS {
             return result + " (no object, just a path)";
         }
         if (!is_versioned) {
-            result += " (not versioned, git-hash: ";
+            result += " (not versioned, git-hash: " + hash;
         } else if (is_modified) {
-            result += " (modified, git-hash: ";
+            result += " (modified, closest match is: " ;
         } else if (is_file) {
             result += " (commit: ";
         }
-        return result + revision + " )";
+        result += revision + " )";
+        return result;
     }
 }

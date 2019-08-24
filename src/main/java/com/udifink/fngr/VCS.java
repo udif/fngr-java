@@ -33,6 +33,7 @@ public abstract class VCS {
     protected String filename;
     protected Date date;
     protected String revision;
+    protected String hash;
     protected boolean in_local_vcs_dir; // true if file location is within a local repository
     protected boolean exists; // true if there is such a file (in_local_vcs_dir must be true)
     protected boolean is_versioned; // true if file is tracked by VCS (exists must be true)
