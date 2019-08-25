@@ -24,7 +24,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Create test SVN
+          name: Create test repositories
           command: 'chmod u+x ./build-test-dir.sh && ./build-test-dir.sh'
 
       # Download and cache dependencies

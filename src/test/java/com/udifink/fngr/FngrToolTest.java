@@ -20,15 +20,15 @@ import org.junit.Test;
 
 public class FngrToolTest {
 
-    @Test
-    public void testMain() throws IOException {
-        String args[] = {"../fngr-testdir/test-svn-workdir/modified-non-head-versioned-file"};
-        FngrTool.main(args);
-    }
+    //@Test
+    //public void testMain() throws IOException {
+    //    String args[] = {"../fngr-testdir/test-svn-workdir/modified-non-head-versioned-file"};
+    //    FngrTool.main(args);
+    //}
 
-    @Test
-    public void testVersion() throws IOException {
-        String args[] = {"-V"};
-        FngrTool.main(args);
-    }
+    //@Test
+    //public void testVersion() throws IOException {
+    //    String args[] = {"-V"};
+    //    FngrTool.main(args);
+    //}
 }
